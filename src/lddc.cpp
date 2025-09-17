@@ -39,6 +39,11 @@
 
 namespace livox_ros {
 
+const std::map<std::string,std::string> ip_2_frame_id{
+  {"192.168.100.89","mid360_head_link"},
+  {"192.168.100.101","mid360_classic_link"}
+};
+
 /** Lidar Data Distribute Control--------------------------------------------*/
 #ifdef BUILDING_ROS1
 Lddc::Lddc(int format, int multi_topic, int data_src, int output_type,
@@ -209,7 +214,7 @@ void Lddc::PublishPointcloud2(LidarDataQueue *queue, uint8_t index) {
 
     PointCloud2 cloud;
     uint64_t timestamp = 0;
-    InitPointcloud2Msg(pkg, cloud, timestamp);
+    InitPointcloud2Msg(pkg, cloud, timestamp,index);
     PublishPointcloud2Data(index, timestamp, cloud);
   }
 }
@@ -259,8 +264,10 @@ void Lddc::PublishPclMsg(LidarDataQueue *queue, uint8_t index) {
   return;
 }
 
-void Lddc::InitPointcloud2MsgHeader(PointCloud2& cloud) {
-  cloud.header.frame_id.assign(frame_id_);
+void Lddc::InitPointcloud2MsgHeader(PointCloud2& cloud,const uint8_t index) {
+  std::string ip_string = IpNumToString(lds_->lidars_[index].handle);
+  std::string frame_id = ip_2_frame_id.at(ip_string);
+  cloud.header.frame_id.assign(frame_id);
   cloud.height = 1;
   cloud.width = 0;
   cloud.fields.resize(7);
@@ -295,8 +302,8 @@ void Lddc::InitPointcloud2MsgHeader(PointCloud2& cloud) {
   cloud.point_step = sizeof(LivoxPointXyzrtlt);
 }
 
-void Lddc::InitPointcloud2Msg(const StoragePacket& pkg, PointCloud2& cloud, uint64_t& timestamp) {
-  InitPointcloud2MsgHeader(cloud);
+void Lddc::InitPointcloud2Msg(const StoragePacket& pkg, PointCloud2& cloud, uint64_t& timestamp,const uint8_t index) {
+  InitPointcloud2MsgHeader(cloud,index);
 
   cloud.point_step = sizeof(LivoxPointXyzrtlt);
 

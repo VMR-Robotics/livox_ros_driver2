@@ -106,8 +106,8 @@ class Lddc final {
 
   void PublishImuData(LidarImuDataQueue& imu_data_queue, const uint8_t index);
 
-  void InitPointcloud2MsgHeader(PointCloud2& cloud);
-  void InitPointcloud2Msg(const StoragePacket& pkg, PointCloud2& cloud, uint64_t& timestamp);
+  void InitPointcloud2MsgHeader(PointCloud2& cloud,const uint8_t index);
+  void InitPointcloud2Msg(const StoragePacket& pkg, PointCloud2& cloud, uint64_t& timestamp,const uint8_t index);
   void PublishPointcloud2Data(const uint8_t index, uint64_t timestamp, const PointCloud2& cloud);
 
   void InitCustomMsg(CustomMsg& livox_msg, const StoragePacket& pkg, uint8_t index);
