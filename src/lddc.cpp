@@ -39,9 +39,10 @@
 
 namespace livox_ros {
 
-const std::map<std::string,std::string> ip_2_frame_id{
+std::map<std::string,std::string> ip_2_frame_id{
   {"192.168.100.89","mid360_head_link"},
-  {"192.168.100.101","mid360_classic_link"}
+  {"192.168.100.101","mid360_classic_link"},
+  {"192.168.100.102","mid360_classic_link"}
 };
 
 /** Lidar Data Distribute Control--------------------------------------------*/
@@ -266,7 +267,7 @@ void Lddc::PublishPclMsg(LidarDataQueue *queue, uint8_t index) {
 
 void Lddc::InitPointcloud2MsgHeader(PointCloud2& cloud,const uint8_t index) {
   std::string ip_string = IpNumToString(lds_->lidars_[index].handle);
-  std::string frame_id = ip_2_frame_id.at(ip_string);
+  std::string frame_id = ip_2_frame_id[ip_string];
   cloud.header.frame_id.assign(frame_id);
   cloud.height = 1;
   cloud.width = 0;
